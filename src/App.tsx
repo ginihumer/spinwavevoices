@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import { _3d } from 'd3-3d';
 // @ts-ignore
 import { SpinPlotReact } from './SpinPlotReact';
-import { SpinPlot } from './SpinPlot';
+import { SpinPlot, Test } from './SpinPlot';
 // import { SpinPlotGL } from './GL';
 // install plotly: https://stackoverflow.com/questions/54200157/should-i-install-plotly-js-or-plotly-js-dist-via-npm
 // https://www.npmjs.com/package/plotly.js
@@ -90,6 +90,7 @@ function App() {
 
   return <Grid container>
       <Grid item xs={3}>
+        {/* <Test></Test> */}
         <SpinPlot pedalPressed={pedal1Pressed} folder={"timeseries_vase"}></SpinPlot>
       </Grid>
       <Grid item xs={3}>

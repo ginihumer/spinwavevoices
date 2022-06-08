@@ -2,6 +2,50 @@ import React from 'react';
 // @ts-ignore
 import * as Plotly from 'plotly.js-dist';
 import { load_z_data, FRAME_RATE, MAX_TIMESTEPS, FPS } from './App';
+import * as d3 from 'd3';
+
+export const Test = () => {
+  // minimal working example of plotly surface plot
+  const plotly_ref = React.useRef(null);
+  
+
+var layout = {
+  title: 'Mt Bruno Elevation',
+  autosize: false,
+  width: 500,
+  height: 500,
+  margin: {
+    l: 65,
+    r: 50,
+    b: 65,
+    t: 90,
+  }
+};
+
+React.useEffect(() => {
+  d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv').then((rows) => {
+    function unpack(rows:any, key:any) {
+      return rows.map(function(row:any) { return row[key]; });
+    }
+
+    var z_data=[ ]
+    for(let i=0;i<24;i++)
+    {
+      z_data.push(unpack(rows,i));
+    }
+
+    var data = [{
+              z: z_data,
+              type: 'surface'
+            }];
+    Plotly.newPlot(plotly_ref.current, data, layout);
+  });
+}, [])
+
+
+
+  return <div ref={plotly_ref}></div>;
+}
 
 
 export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
@@ -52,7 +96,7 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
             eye: {
                 "x": 1, 
                 "y": 0.3, 
-                "z": 1
+                "z": 0.5
             }, 
             // projection: "orthographic"
         }

@@ -1,3 +1,8 @@
+- install Node.js (v16.15.1) and npm (8.11.0)
+- npm install
+- npm start
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
