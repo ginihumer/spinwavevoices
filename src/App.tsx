@@ -4,8 +4,6 @@ import './App.css';
 import * as d3 from 'd3';
 import Grid from '@mui/material/Grid';
 // @ts-ignore
-import { _3d } from 'd3-3d';
-// @ts-ignore
 import { SpinPlotReact } from './SpinPlotReact';
 import { SpinPlot, Test } from './SpinPlot';
 // import { SpinPlotGL } from './GL';
@@ -29,7 +27,64 @@ function number_zero_pad(num:number, size:number) {
   return str_num;
 }
 
-export function load_z_data(timestep:number, folder:string){
+let cached_data = {} as any;
+
+function init_cache(folder:string){
+  console.log("init_cache")
+  for(var timestep=0; timestep < MAX_TIMESTEPS; timestep++){
+    const path = 'data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv';
+    d3.csv(path).then(function(rows){
+      function unpack(rows:any, key:any) {
+        return rows.map(function(row:any) { return row[key]; });
+      }
+      var z_data=[ ]
+      for(let i=0;i<Object.keys(rows[0]).length;i++)
+      {
+        z_data.push(unpack(rows,i));
+      }
+      console.log("cache:", path)
+      cached_data[path] = z_data;
+    });
+  }
+}
+
+export async function load_z_data_async(timestep:number, folder:string): Promise<any[]>{
+  const path = 'data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv';
+
+  // load from cache
+  if(path in cached_data){
+    return cached_data['data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv'];
+  }
+
+  // load from source
+  // surfaceplot: https://plotly.com/javascript/3d-surface-plots/
+  return await d3.csv('data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv').then(function(rows){
+    function unpack(rows:any, key:any) {
+      return rows.map(function(row:any) { return row[key]; });
+    }
+    var z_data=[ ]
+    for(let i=0;i<Object.keys(rows[0]).length;i++)
+    {
+      z_data.push(unpack(rows,i));
+    }
+    return z_data;
+  });
+}
+
+export function load_z_data(timestep:number, folder:string): Promise<any[]>{
+
+  const path = 'data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv';
+
+  // load from cache
+  if(path in cached_data){
+    return new Promise(function(resolve, reject) {
+      resolve(cached_data['data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv']);
+    });
+  }
+
+
+
+  // load from source
   // surfaceplot: https://plotly.com/javascript/3d-surface-plots/
   return d3.csv('data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv').then(function(rows){
     function unpack(rows:any, key:any) {
@@ -54,6 +109,10 @@ function App() {
   const [pedal2Pressed, setPedal2Pressed] = React.useState(false);
 
   React.useEffect(() => {
+
+    init_cache("timeseries_vase")
+    init_cache("timeseries_rectangle")
+
     const keydown = (ev: KeyboardEvent) => {
       if(ev.key === "1"){
         setPedal1Pressed(true)

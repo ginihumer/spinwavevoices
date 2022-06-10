@@ -1,7 +1,7 @@
 import React from 'react';
 // @ts-ignore
 import * as Plotly from 'plotly.js-dist';
-import { load_z_data, FRAME_RATE, MAX_TIMESTEPS, FPS } from './App';
+import { load_z_data, load_z_data_async, FRAME_RATE, MAX_TIMESTEPS, FPS } from './App';
 import * as d3 from 'd3';
 
 export const Test = () => {
@@ -127,7 +127,7 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
                 step_ref.current = new_step
                 console.log(step_ref.current)
                 if (plotly_ref.current) {
-                    load_z_data(step_ref.current, props.folder).then((z_data) => {
+                  load_z_data_async(step_ref.current, props.folder).then((z_data) => {
                         if (plotly_ref.current) {
                             // Plotly.animate(plotly_ref.current, {
                             //     data: [{
@@ -162,7 +162,7 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
   
     React.useEffect(() => {
       if (plotly_ref.current) {
-        load_z_data(step_ref.current, props.folder).then((z_data) => {
+        load_z_data_async(step_ref.current, props.folder).then((z_data) => {
             console.log(step_ref.current)
           if (plotly_ref.current) {
             data[0].z = z_data
