@@ -10,6 +10,8 @@ import { SpinPlot, Test } from './SpinPlot';
 // install plotly: https://stackoverflow.com/questions/54200157/should-i-install-plotly-js-or-plotly-js-dist-via-npm
 // https://www.npmjs.com/package/plotly.js
 
+import {WebMidi} from "webmidi";
+
 // var Plotly = require('plotly.js-dist')
 // export const MAX_TIMESTEPS = 2800;
 export const MAX_TIMESTEPS = 200;
@@ -50,7 +52,7 @@ function init_cache(folder:string){
 
 export async function load_z_data_async(timestep:number, folder:string): Promise<any[]>{
   const path = 'data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv';
-
+    
   // load from cache
   if(path in cached_data){
     return cached_data['data/'+folder+'/m' + number_zero_pad(timestep, 6) + '.csv'];
@@ -113,31 +115,83 @@ function App() {
     init_cache("timeseries_vase")
     init_cache("timeseries_rectangle")
 
-    const keydown = (ev: KeyboardEvent) => {
-      if(ev.key === "1"){
-        setPedal1Pressed(true)
-      }
-      if(ev.key === "2"){
-        setPedal2Pressed(true)
-      }
-    }
 
-    const keyup = (ev: KeyboardEvent) => {
-      if(ev.key === "1"){
-        setPedal1Pressed(false)
-      }
-      if(ev.key === "2"){
-        setPedal2Pressed(false)
-      }
-    }
+    WebMidi
+        .enable()
+        .then(() => {
+            console.log("WebMidi enabled!")
+            
+            const midiPort = "IAC Driver Bus 1" // TODO: rename this appropriately for Windows
+            const myInput = WebMidi.getInputByName(midiPort)
+            
+            myInput.addListener("noteon", e => {
+                // React to the pedal presses
+                if (e.note.number == 60) {
+                    setPedal1Pressed(true)
+                } else if (e.note.number == 61) {
+                    setPedal2Pressed(true)
+                } else if (e.note.number == 62) {
 
-    // for testing, we just add keyboard keypress events
-    window.addEventListener("keydown", keydown);
-    window.addEventListener("keyup", keyup);
-    return () => {
-      window.removeEventListener("keydown", keydown)
-      window.removeEventListener("keydown", keyup)
-    }
+                } else if (e.note.number == 63) {
+
+                } else if (e.note.number == 64) {
+
+                } else if (e.note.number == 65) {
+
+                } else if (e.note.number == 66) {
+
+                }
+            })
+
+            myInput.addListener("noteoff", e => {
+                // React to the pedal releases
+                if (e.note.number == 60) {
+                    setPedal1Pressed(false)
+                } else if (e.note.number == 61) {
+                    setPedal2Pressed(false)
+                } else if (e.note.number == 62) {
+
+                } else if (e.note.number == 63) {
+
+                } else if (e.note.number == 64) {
+
+                } else if (e.note.number == 65) {
+
+                } else if (e.note.number == 66) {
+
+                }
+            })
+        })
+        .catch(err => alert(err));
+
+    
+    // const keydown = (ev: KeyboardEvent) => {
+    //   if(ev.key === "1"){
+    //     setPedal1Pressed(true)
+    //   }
+    //   if(ev.key === "2"){
+    //     setPedal2Pressed(true)
+    //   }
+    // }
+
+    // const keyup = (ev: KeyboardEvent) => {
+    //   if(ev.key === "1"){
+    //     setPedal1Pressed(false)
+    //   }
+    //   if(ev.key === "2"){
+    //     setPedal2Pressed(false)
+    //   }
+    // }
+
+    // // for testing, we just add keyboard keypress events
+    // window.addEventListener("keydown", keydown);
+    // window.addEventListener("keyup", keyup);
+    // return () => {
+    //   window.removeEventListener("keydown", keydown)
+    //   window.removeEventListener("keydown", keyup)
+    // }
+
+
   }, [])
   
   React.useEffect(() => {

@@ -94,9 +94,9 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
         },
         camera: {
             eye: {
-                "x": 1, 
-                "y": 0.3, 
-                "z": 0.5
+                "x": 0, 
+                "y": 0, 
+                "z": 1
             }, 
             // projection: "orthographic"
         }
