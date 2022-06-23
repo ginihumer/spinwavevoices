@@ -2,72 +2,77 @@ import React from 'react';
 // @ts-ignore
 import * as Plotly from 'plotly.js-dist';
 import { load_z_data, load_z_data_async, FRAME_RATE, MAX_TIMESTEPS, FPS } from './App';
-import * as d3 from 'd3';
 
-export const Test = () => {
-  // minimal working example of plotly surface plot
-  const plotly_ref = React.useRef(null);
+
+function rotate(eye0:any, angle:any) {
+  var rtz = xyz2rtz(eye0);
+  rtz.t += angle;
   
-
-var layout = {
-  title: 'Mt Bruno Elevation',
-  autosize: false,
-  width: 500,
-  height: 500,
-  margin: {
-    l: 65,
-    r: 50,
-    b: 65,
-    t: 90,
-  }
-};
-
-React.useEffect(() => {
-  d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv').then((rows) => {
-    function unpack(rows:any, key:any) {
-      return rows.map(function(row:any) { return row[key]; });
-    }
-
-    var z_data=[ ]
-    for(let i=0;i<24;i++)
-    {
-      z_data.push(unpack(rows,i));
-    }
-
-    var data = [{
-              z: z_data,
-              type: 'surface'
-            }];
-    Plotly.newPlot(plotly_ref.current, data, layout);
-  });
-}, [])
-
-
-
-  return <div ref={plotly_ref}></div>;
+  var eye1 = rtz2xyz(rtz);
+  return eye1
 }
 
+function xyz2rtz(xyz:any) {
+  return {
+    r: Math.sqrt(xyz.x * xyz.x + xyz.y * xyz.y),
+    t: Math.atan2(xyz.y, xyz.x),
+    z: xyz.z
+  };
+}
 
-export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
+function rtz2xyz(rtz:any) {
+  return {
+    x: rtz.r * Math.cos(rtz.t),
+    y: rtz.r * Math.sin(rtz.t),
+    z: rtz.z
+  };
+}
+
+export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?: boolean, width?: number, height?: number }) => {
     const previous_time_ref = React.useRef<number>();
     const totaltime_ref = React.useRef(0);
     const step_ref = React.useRef(0);
     const plotly_ref = React.useRef(null);
     const request_ref = React.useRef<any>();
 
-    let data = [{
-        z: new Array<any>(),
-        zmin: -0.01,
-        zmax: 0.01,
-        cmin: -0.01,
-        cmid: 0,
-        cmax: 0.01,
-        type: 'surface',
-        showscale: false,
-      }];
-    const layout = {
+    let width = props.width ?? 600;
+    let height = props.height ?? 600;
+
+    let axis_template = {
+        visible: false,
+        showgrid: false,
+        zeroline: false,
+      };
+
+    // let eye = rotate({
+    //   "x": 0, //1, 
+    //   "y": 0, //0.3, 
+    //   "z": 1, //0.5
+    // }, Math.PI/90)
+
+    // https://plotly.com/python/3d-camera-controls/
+    
+    const [data, setData] = React.useState([{
+      z: new Array<any>(),
+      zmin: -0.01,
+      zmax: 0.01,
+      cmin: -0.01,
+      cmid: 0,
+      cmax: 0.01,
+      // type: 'surface',
+      // type: 'heatmap',
+      type: props.plot3d ? "surface" : "heatmap",
+      // colorscale: "Viridis",
+      // colorscale: "sequential",
+      // colorscale: [[0.0,"rgba(0,255,0,1)"],[0.49,"rgba(255,255,255,1)"],[0.499,"rgba(255,255,255,0)"],[0.501,"rgba(255,255,255,1)"],[1.0,"rgba(255,0,0,1)"]],
+      colorscale: [[0.0,"rgba(0,255,0,1)"],[0.5,"rgba(255,255,255,0)"],[1.0,"rgba(255,0,0,1)"]],
+      showscale: false,
+    }])
+    const [layout, setLayout] = React.useState({
       title: 'Spin Waves',
       hovermode: false,
+      yaxis: axis_template,
+      xaxis: axis_template,
       scene: {
         zaxis: {
             range: [-0.1, 0.1],
@@ -76,40 +81,42 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
             showgrid: false,
             zeroline: false,
         },
-        yaxis:{
-            visible: false,
-            showgrid: false,
-            zeroline: false,
-        },
-        xaxis:{
-            visible: false,
-            showgrid: false,
-            zeroline: false,
-        },
+        yaxis: axis_template,
+        xaxis: axis_template,
         aspectmode: "manual", 
         aspectratio: {
-            x: 1,
-            y: 1/4,
+            x: 1/4,
+            y: 1,
             z: 1,
         },
         camera: {
-            eye: {
-                "x": 1, 
-                "y": 0.3, 
-                "z": 0.5
-            }, 
-            // projection: "orthographic"
+          eye: {
+            "x": 0, //1, 
+            "y": 0, //0.3, 
+            "z": 1, //0.5
+          },
+          up: {
+            "x": 1,
+            "y": 0,
+            "z": 1
+          },
+          center: {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          projection: "orthographic"
         }
     },
-      width: 600,
-      height: 600,
+      width: width,
+      height: height,
       margin: {
-        l: 65,
-        r: 50,
-        b: 65,
-        t: 90,
+        // l: 65,
+        // r: 50,
+        // b: 65,
+        // t: 90,
       }
-    };
+    })
 
     const animate = (time:number) => { // time since app started
         // console.log(time)
@@ -188,6 +195,20 @@ export const SpinPlot = (props: { pedalPressed: boolean; folder: string }) => {
     return <div ref={plotly_ref}></div>;
   };
   
+
+
+
+
+
+
+
+
+
+
+
+
+// deprecated
+
 
 export const SpinPlotOld = (props: { pedal1Pressed: boolean; folder: string }) => {
   const [timestep, setTimestep] = React.useState(100);
