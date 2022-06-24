@@ -121,7 +121,8 @@ function App() {
         .then(() => {
             console.log("WebMidi enabled!")
             
-            const midiPort = "IAC Driver Bus 1" // TODO: rename this appropriately for Windows
+            // const midiPort = "IAC Driver Bus 1" // TODO: rename this appropriately for Windows
+            const midiPort = "loopMIDI Port"
             const myInput = WebMidi.getInputByName(midiPort)
             
             myInput.addListener("noteon", e => {
