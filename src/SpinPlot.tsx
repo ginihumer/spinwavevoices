@@ -65,12 +65,14 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
       // colorscale: "Viridis",
       // colorscale: "sequential",
       // colorscale: [[0.0,"rgba(0,255,0,1)"],[0.49,"rgba(255,255,255,1)"],[0.499,"rgba(255,255,255,0)"],[0.501,"rgba(255,255,255,1)"],[1.0,"rgba(255,0,0,1)"]],
-      colorscale: [[0.0,"rgba(0,255,0,1)"],[0.5,"rgba(255,255,255,0)"],[1.0,"rgba(255,0,0,1)"]],
+      colorscale: [[0.0,"rgba(114,172,204,1)"],[0.5,"rgba(34,34,34,1)"],[1.0,"rgba(204,151,82,1)"]],//[[0.0,"rgba(0,255,0,1)"],[0.5,"rgba(255,255,255,0)"],[1.0,"rgba(255,0,0,1)"]],
       showscale: false,
     }])
     const [layout, setLayout] = React.useState({
       title: '',
       hovermode: false,
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
       yaxis: axis_template,
       xaxis: axis_template,
       scene: {

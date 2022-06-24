@@ -171,31 +171,31 @@ function App() {
         .catch(err => alert(err));
 
     
-    // const keydown = (ev: KeyboardEvent) => {
-    //   if(ev.key === "1"){
-    //     setPedal1Pressed(true)
-    //   }
-    //   if(ev.key === "2"){
-    //     setPedal2Pressed(true)
-    //   }
-    // }
+    const keydown = (ev: KeyboardEvent) => {
+      if(ev.key === "1"){
+        setPedal1Pressed(true)
+      }
+      if(ev.key === "2"){
+        setPedal2Pressed(true)
+      }
+    }
 
-    // const keyup = (ev: KeyboardEvent) => {
-    //   if(ev.key === "1"){
-    //     setPedal1Pressed(false)
-    //   }
-    //   if(ev.key === "2"){
-    //     setPedal2Pressed(false)
-    //   }
-    // }
+    const keyup = (ev: KeyboardEvent) => {
+      if(ev.key === "1"){
+        setPedal1Pressed(false)
+      }
+      if(ev.key === "2"){
+        setPedal2Pressed(false)
+      }
+    }
 
-    // // for testing, we just add keyboard keypress events
-    // window.addEventListener("keydown", keydown);
-    // window.addEventListener("keyup", keyup);
-    // return () => {
-    //   window.removeEventListener("keydown", keydown)
-    //   window.removeEventListener("keydown", keyup)
-    // }
+    // for testing, we just add keyboard keypress events
+    window.addEventListener("keydown", keydown);
+    window.addEventListener("keyup", keyup);
+    return () => {
+      window.removeEventListener("keydown", keydown)
+      window.removeEventListener("keydown", keyup)
+    }
 
 
   }, [])
