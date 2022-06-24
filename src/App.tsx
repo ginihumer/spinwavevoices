@@ -109,6 +109,11 @@ function App() {
   useGamepads((gamepads) => setGamepads(gamepads));
   const [pedal1Pressed, setPedal1Pressed] = React.useState(false);
   const [pedal2Pressed, setPedal2Pressed] = React.useState(false);
+  const [pedal3Pressed, setPedal3Pressed] = React.useState(false);
+  const [pedal4Pressed, setPedal4Pressed] = React.useState(false);
+  const [pedal5Pressed, setPedal5Pressed] = React.useState(false);
+  const [pedal6Pressed, setPedal6Pressed] = React.useState(false);
+  const [pedal7Pressed, setPedal7Pressed] = React.useState(false);
 
   React.useEffect(() => {
 
@@ -128,38 +133,38 @@ function App() {
             myInput.addListener("noteon", e => {
                 // React to the pedal presses
                 if (e.note.number == 60) {
-                    setPedal1Pressed(true)
+                  setPedal1Pressed(true)
                 } else if (e.note.number == 61) {
-                    setPedal2Pressed(true)
+                  setPedal2Pressed(true)
                 } else if (e.note.number == 62) {
-
+                  setPedal3Pressed(true)
                 } else if (e.note.number == 63) {
-
+                  setPedal4Pressed(true)
                 } else if (e.note.number == 64) {
-
+                  setPedal5Pressed(true)
                 } else if (e.note.number == 65) {
-
+                  setPedal6Pressed(true)
                 } else if (e.note.number == 66) {
-
+                  setPedal7Pressed(true)
                 }
             })
 
             myInput.addListener("noteoff", e => {
                 // React to the pedal releases
                 if (e.note.number == 60) {
-                    setPedal1Pressed(false)
+                  setPedal1Pressed(false)
                 } else if (e.note.number == 61) {
-                    setPedal2Pressed(false)
+                  setPedal2Pressed(false)
                 } else if (e.note.number == 62) {
-
+                  setPedal3Pressed(false)
                 } else if (e.note.number == 63) {
-
+                  setPedal4Pressed(false)
                 } else if (e.note.number == 64) {
-
+                  setPedal5Pressed(false)
                 } else if (e.note.number == 65) {
-
+                  setPedal6Pressed(false)
                 } else if (e.note.number == 66) {
-
+                  setPedal7Pressed(false)
                 }
             })
         })
@@ -203,17 +208,32 @@ function App() {
   }, [gamepads])
 
   return <Grid container>
-      <Grid item xs={3}>
-        <SpinPlot pedalPressed={pedal1Pressed} folder={"timeseries_vase"} width={250} height={600}></SpinPlot>
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal1Pressed} folder={"timeseries_rectangle"} width={300} height={600} plot3d={false}></SpinPlot>
       </Grid>
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <SpinPlot pedalPressed={pedal1Pressed} folder={"timeseries_vase"} plot3d={true}></SpinPlot>
+      </Grid> */}
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal2Pressed} folder={"timeseries_vase"} width={300} height={600} plot3d={true}></SpinPlot>
       </Grid>
-      <Grid item xs={3}>
-        <SpinPlot pedalPressed={pedal2Pressed} folder={"timeseries_rectangle"} width={250} height={600}></SpinPlot>
-      </Grid>
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <SpinPlot pedalPressed={pedal2Pressed} folder={"timeseries_rectangle"} plot3d={true}></SpinPlot>
+      </Grid> */}
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal3Pressed} folder={"timeseries_test1"} width={300} height={600}></SpinPlot>
+      </Grid>
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal4Pressed} folder={"timeseries_test2"} width={300} height={600}></SpinPlot>
+      </Grid>
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal5Pressed} folder={"timeseries_test3"} width={300} height={600}></SpinPlot>
+      </Grid>
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal6Pressed} folder={"timeseries_test4"} width={300} height={600}></SpinPlot>
+      </Grid>
+      <Grid item xs={2}>
+        <SpinPlot pedalPressed={pedal7Pressed} folder={"timeseries_test5"} width={300} height={600}></SpinPlot>
       </Grid>
     </Grid>
 }

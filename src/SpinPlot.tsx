@@ -69,7 +69,7 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
       showscale: false,
     }])
     const [layout, setLayout] = React.useState({
-      title: 'Spin Waves',
+      title: '',
       hovermode: false,
       yaxis: axis_template,
       xaxis: axis_template,
