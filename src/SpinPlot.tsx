@@ -35,7 +35,7 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
     const plotly_ref = React.useRef(null);
     const request_ref = React.useRef<any>();
 
-    let width = props.width ?? 600;
+    let width = props.width ?? 300;
     let height = props.height ?? 600;
 
     let axis_template = {
@@ -87,7 +87,7 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
         xaxis: axis_template,
         aspectmode: "manual", 
         aspectratio: {
-            x: 1/4,
+            x: width/height,
             y: 1,
             z: 1,
         },
@@ -113,10 +113,10 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
       width: width,
       height: height,
       margin: {
-        // l: 65,
-        // r: 50,
-        // b: 65,
-        // t: 90,
+        l: 10,//65,
+        r: 10,//50,
+        b: 10,//65,
+        t: 10,//90,
       }
     })
 
@@ -194,7 +194,7 @@ export const SpinPlot = (props: { pedalPressed: boolean, folder: string, plot3d?
         
     }, [props.pedalPressed]);
     
-    return <div ref={plotly_ref}></div>;
+    return <div ref={plotly_ref} style={{display:"inline-block"}}></div>;
   };
   
 
